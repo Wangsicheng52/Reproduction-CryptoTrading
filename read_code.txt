@@ -1,0 +1,45 @@
+1. 软件环境要求
+Linux 开发环境：代码开发和测试是在 Linux 系统上进行的。
+Python 解释器：代码可以使用标准的 Python 解释器运行。
+CUDA GPU 和 TensorFlow：尽管代码可以在 CPU 上运行，
+作者强烈建议使用配置了 TensorFlow 和 CUDA GPU 的环境来提高性能。
+这意味着，如果你有支持 CUDA 的 GPU（如 Nvidia GPU），可以显著加速模型训练和推理的过程。
+2. Python 包依赖
+为确保代码正常运行，你需要安装以下 Python 包：
+
+Numpy：用于数值计算和矩阵操作的基础库。
+Scikit-learn (SkLearn)：用于数据预处理、建模和评估的机器学习库。
+Matplotlib：用于数据可视化和绘图的库。
+TensorFlow：用于深度学习建模的框架，建议在 CUDA GPU 上安装。
+SHAP：用于解释机器学习模型输出的库。
+Binance API：用于从 Binance 交易所获取加密货币数据的 API 客户端。
+3. 文件夹结构
+根目录 (root folder)：包含神经网络训练和 SHAP 解释生成的输出结果。
+reports/：存放脚本输出的所有报告文件。
+rep_charts_paper/：包含文章中报告的图表和表格等内容。
+processed_data/：存储经过预处理的数据集，包含应用不同标注方案后的数据。
+raw_data_4_hour/：存储从 Binance API 下载的原始数据集，以 4 小时为单位的时间序列数据。
+4. 运行流程（Pipeline）
+代码执行流程分为多个脚本，按以下顺序依次运行：
+
+config.py：包含脚本的配置文件。你可能需要根据项目需求进行修改，比如模型参数或路径设置。
+run_download_data.py：用于从 Binance API 下载加密货币原始数据。
+你需要更新该脚本中的 Binance API 密钥和秘密密钥，以获取数据。下载的数据将存储在 raw_data_4_hour/ 文件夹中。
+run_preprocess_dataset.py：对下载的数据进行预处理，将其转化为模型可用的格式，
+并保存为 CSV 文件，存放在 processed_data/ 文件夹中。
+run_data_stats.py：生成时间数据分布的统计图表，帮助你理解数据的特征和分布情况。
+run_alpha_beta.py：计算模型所需的 Alpha 和 Beta 参数（用于标注交易信号）。
+计算出的值需要手动复制并粘贴到 config.py 文件中。
+run_search_bw_fw.py：进行前后窗口（Backward 和 Forward 窗口）的网格搜索，
+输出结果保存为 Excel 文件 reports/final_ncr_1.xlsx。
+run_train_final.py：训练最终的五个模型。训练后的报告分别存储在 reports/ 目录下，
+文件名格式为 final_model_*_*.xlsx，每个文件对应不同的前后窗口组合。
+run_backtest_final.py：对上述训练好的五个模型进行回测，
+并将回测报告保存为 reports/backtest_final.xlsx 文件。
+run_shap_explainer.py：生成 SHAP 解释器对象，并将其序列化保存到磁盘中，用于解释模型的预测结果。
+run_shap_chart.py：绘制 SHAP 图表，帮助分析哪些特征对模型预测贡献最大。
+总结
+README 文件为整个项目的运行流程提供了清晰的指导，
+特别是从数据下载、预处理、模型训练到模型解释的完整流水线。
+作者强调了使用 GPU 进行加速的重要性，并为每一步提供了详细的脚本说明。
+这些步骤按顺序运行将最终生成报告和图表，用于评估模型的表现和解释模型的决策。
